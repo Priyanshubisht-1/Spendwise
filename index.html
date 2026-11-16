@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spendwise Website</title>
+    <meta name="description" content="A clean, professional personal expense tracker.">
+    <title>Spendwise — Personal Finance</title>
+
+    <!-- Google Fonts: DM Sans (body text) and Manrope (headings/numbers) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    
+
+    <!-- App shell: holds the fixed sidebar and the scrolling main content -->
+    <div class="app-shell">
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar" id="sidebar"> </aside>
+
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-content" id="overview"> </main>
+
+    </div>
+
+
+    <!-- ================= ADD TRANSACTION MODAL ================= -->
+    <!-- Hidden by default; shown when the "show" class is added by script.js -->
+    <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true"> </div>
+
+
+    <div class="toast" id="toast" role="status" aria-live="polite"> </div>
+
+    <!-- App logic (loaded last so the DOM elements above already exist) -->
+    <script src="script.js"></script>
 </body>
+
 </html>

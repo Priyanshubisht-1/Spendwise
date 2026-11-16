@@ -1,0 +1,44 @@
+/* ==========================================================
+   Spendwise — stylesheet
+   ========================================================== */
+
+:root {
+   --bg: #f5f7fb;
+   --surface: #fff;
+   --text: #172033;
+   --line: #edf0f5;
+   --purple: #7665e8;
+   --purple-soft: #f0edff;
+   --shadow: 0 8px 28px rgba(31, 45, 75, .045);
+}
+
+* {
+   box-sizing: border-box
+}
+
+html {
+   scroll-behavior: smooth
+}
+
+body {
+   margin: 0;
+   background: var(--bg);
+   color: var(--text);
+   font-family: 'DM Sans', sans-serif;
+   font-size: 14px
+}
+
+button,
+input,
+select,
+textarea {
+   font: inherit
+}
+
+button {
+   cursor: pointer
+}
+
+.app-shell {
+   min-height: 100vh
+}
