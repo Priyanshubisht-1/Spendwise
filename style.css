@@ -169,3 +169,432 @@ button {
    color: black;
    margin: 6px 0 0
 }
+
+/* ==========================================================
+   MAIN CONTENT + TOP BAR
+   ========================================================== */
+/* Leave room on the left for the fixed sidebar */
+.main-content {
+   margin-left: 246px;
+   padding: 0 48px 28px;
+   max-width: 1680px
+}
+
+.topbar {
+   height: 78px;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   border-bottom: 1px solid #e9edf3;
+   padding-inline: 20px;
+}
+
+.breadcrumb {
+   font-size: 12px;
+   color: #9aa3b2
+}
+
+.breadcrumb span {
+   padding: 0 9px;
+   color: #c5cad3
+}
+
+.breadcrumb strong {
+   color: #566176;
+   font-weight: 600
+}
+
+.top-actions {
+   display: flex;
+   align-items: center;
+   gap: 19px
+}
+
+.today-label {
+   font-size: 11px;
+   color: #9aa3b2
+}
+
+.icon-button {
+   border: 1px solid var(--line);
+   background: #fff;
+   width: 33px;
+   height: 33px;
+   border-radius: 9px;
+   color: #7d8799;
+   font-size: 17px
+}
+
+/* theme toggle */
+
+.mobile-menu {
+   display: none
+}
+
+/* only shown on small screens */
+
+/* ==========================================================
+   WELCOME ROW + BUTTONS
+   ========================================================== */
+.welcome-row {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   padding: 37px 0 27px
+}
+
+.eyebrow {
+   font-size: 9px;
+   letter-spacing: 1.45px;
+   color: #9ba4b4;
+   font-weight: 700;
+   margin: 0 0 9px
+}
+
+/* small uppercase caption */
+.welcome-row h1 {
+   font: 800 28px 'Manrope', sans-serif;
+   letter-spacing: -1.2px;
+   margin: 0;
+   color: #1c2941
+}
+
+.wave {
+   color: var(--purple)
+}
+
+.subheading {
+   font-size: 12px;
+   color: #98a1b0;
+   margin: 7px 0 0
+}
+
+/* Main purple call-to-action button */
+.primary-button {
+   border: 0;
+   border-radius: 8px;
+   background: #7665e8;
+   color: #fff;
+   padding: 12px 17px;
+   font-size: 11px;
+   font-weight: 700;
+   box-shadow: 0 6px 14px #7665e82b;
+   transition: .2s
+}
+
+.primary-button:hover {
+   background: #6553d8;
+   transform: translateY(-1px)
+}
+
+.primary-button span {
+   font-size: 16px;
+   vertical-align: -1px;
+   margin-right: 5px
+}
+
+/* ==========================================================
+   STAT CARDS
+   ========================================================== */
+/* 4 columns: the balance card is slightly wider */
+.stats-grid {
+   display: grid;
+   grid-template-columns: 1.25fr 1fr 1fr 1fr;
+   gap: 15px
+}
+
+.stat-card {
+   background: var(--surface);
+   border: 1px solid var(--line);
+   border-radius: 12px;
+   padding: 19px 19px 16px;
+   min-height: 139px;
+   position: relative;
+   overflow: hidden;
+   box-shadow: var(--shadow)
+}
+
+/* Dark navy balance card */
+.balance-card {
+   background: #202d49;
+   color: white;
+   border-color: #202d49
+}
+
+.stat-top {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   font-size: 11px;
+   color: #8e98aa;
+   font-weight: 500
+}
+
+.balance-card .stat-top {
+   color: #b0b8c8
+}
+
+.stat-symbol {
+   font-size: 17px;
+   color: #a99cff
+}
+
+/* Small coloured icon boxes */
+.stat-icon {
+   width: 27px;
+   height: 27px;
+   border-radius: 8px;
+   display: grid;
+   place-items: center;
+   font-size: 14px
+}
+
+.income-icon {
+   background: #e7f8f1;
+   color: #20a77a
+}
+
+.expense-icon {
+   background: #fff0f0;
+   color: #e46d78
+}
+
+.month-icon {
+   background: #f0edff;
+   color: #806ee7
+}
+
+/* Big number + footer text */
+.stat-value {
+   font: 800 24px 'Manrope', sans-serif;
+   letter-spacing: -.7px;
+   margin-top: 13px
+}
+
+.balance-card .stat-value {
+   color: #fff
+}
+
+.stat-foot {
+   font-size: 10px;
+   color: #aeb8c9;
+   margin-top: 8px
+}
+
+.positive {
+   color: #54d5a6;
+   font-size: 8px;
+   margin-right: 4px
+}
+
+.muted-foot {
+   color: #a2aaba
+}
+
+/* Short coloured line at the bottom of each card */
+.stat-accent {
+   position: absolute;
+   bottom: 0;
+   left: 19px;
+   width: 38px;
+   height: 3px;
+   border-radius: 3px
+}
+
+.income-accent {
+   background: #4bc69b
+}
+
+.expense-accent {
+   background: #ee8990
+}
+
+.month-accent {
+   background: #9a8bf1
+}
+
+/* Decorative bars in the balance card (varying heights via nth-child) */
+.mini-bars {
+   position: absolute;
+   right: 18px;
+   bottom: 0;
+   height: 39px;
+   display: flex;
+   align-items: end;
+   gap: 4px;
+   opacity: .35
+}
+
+.mini-bars i {
+   display: block;
+   width: 5px;
+   border-radius: 3px 3px 0 0;
+   background: #a99cff;
+   height: 30%
+}
+
+.mini-bars i:nth-child(2n) {
+   height: 65%
+}
+
+.mini-bars i:nth-child(3n) {
+   height: 45%
+}
+
+.mini-bars i:nth-child(4n) {
+   height: 90%
+}
+
+
+/* ==========================================================
+   DARK MODE (toggled by adding class "dark" to <body>)
+   ========================================================== */
+/* Override the core variables */
+body.dark {
+   --bg: #111827;
+   --surface: #1b2638;
+   --surface-2: #202c40;
+   --text: #edf1f8;
+   --line: #2a3649;
+   --shadow: none;
+   color: var(--text);
+   background: radial-gradient(circle at 85% 0%, rgba(118, 101, 232, .09), transparent 30%), var(--bg);
+}
+
+/* Dark backgrounds for sidebar, top bar and modal */
+body.dark .sidebar,
+body.dark .topbar,
+body.dark .modal {
+   background: #1b2638
+}
+
+body.dark .sidebar {
+   border-right-color: #2a3649;
+}
+
+body.dark .topbar {
+   border-bottom-color: #2a3649;
+}
+
+/* Light text for headings and key values */
+body.dark .brand,
+body.dark .welcome-row h1,
+body.dark .panel-heading h2,
+body.dark .donut-center strong,
+body.dark .transaction-name,
+body.dark .amount-cell {
+   color: #edf1f8
+}
+
+/* Sidebar links */
+body.dark .nav-link {
+   color: #a6b0c1
+}
+
+body.dark .nav-link.active {
+   background: #302d53;
+   color: #b7aaff
+}
+
+body.dark .upgrade-card {
+   background: linear-gradient(145deg, #292b48, #202c40);
+   border-color: #343653;
+}
+
+body.dark .upgrade-card strong,
+body.dark .upgrade-card p {
+   color: #dce2ed;
+}
+
+/* Card borders */
+body.dark .panel,
+body.dark .stat-card:not(.balance-card) {
+   border-color: #2a3649
+}
+
+/* Inputs, dropdowns, search box, icon button */
+body.dark .select-control,
+body.dark .icon-button,
+body.dark .form-control,
+body.dark .search-box {
+   background: #202c40;
+   border-color: #354258;
+   color: #e3e9f2
+}
+
+/* Donut hole, chart grid lines */
+body.dark .donut:before {
+   background: var(--surface)
+}
+
+body.dark .chart-bars {
+   border-color: #344054;
+   background: repeating-linear-gradient(to bottom, transparent 0, transparent 37px, #2b374a 38px, #2b374a 39px)
+}
+
+/* Table borders, hover row and pills */
+body.dark thead th,
+body.dark tbody td,
+body.dark .table-footer {
+   border-color: #2a3649
+}
+
+body.dark tbody tr:hover {
+   background: #202c40;
+}
+
+body.dark .category-pill {
+   background: #29364b;
+   border-color: #354258;
+   color: #c0cada
+}
+
+/* Row action buttons + export button */
+body.dark .edit-button {
+   background: #302d53;
+   color: #c2baff;
+}
+
+body.dark .edit-button:hover {
+   background: #3b3667;
+}
+
+body.dark .delete-button {
+   background: #482d39;
+   color: #ffadb3;
+}
+
+body.dark .export-button {
+   background: #202c40;
+   border-color: #354258;
+   color: #c2baff;
+}
+
+body.dark .export-button:hover:not(:disabled) {
+   background: #302d53;
+}
+
+/* Modal elements */
+body.dark .modal-header h2 {
+   color: #edf1f8
+}
+
+body.dark .modal-description {
+   color: #9aa8bd;
+}
+
+body.dark .type-switch {
+   background: #263348
+}
+
+body.dark .type-option.selected {
+   background: #39465d;
+   color: #c1b8ff
+}
+
+/* Search box text */
+body.dark .search-box input {
+   color: #e3e9f2
+}
+
+
