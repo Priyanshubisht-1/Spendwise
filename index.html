@@ -24,7 +24,35 @@
     <div class="app-shell">
 
         <!-- ================= SIDEBAR ================= -->
-        <aside class="sidebar" id="sidebar"> </aside>
+        <aside class="sidebar" id="sidebar">
+            <!-- Logo / brand -->
+            <a class="brand" href="#" aria-label="Spendwise home">
+                <span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 17.5 9.2 12l3.5 3.2L20 7.5" />
+                        <path d="M14.8 7.5H20v5.2" />
+                    </svg></span>
+                <span>Spendwise</span>
+            </a>
+
+            <!-- Main navigation links (anchor links that scroll to sections on the page) -->
+            <div class="side-label">WORKSPACE</div>
+            <nav class="side-nav" aria-label="Main navigation">
+                <a class="nav-link active" href="#overview"><span class="nav-icon">▦</span> Overview</a>
+                <a class="nav-link" href="#transactions"><span class="nav-icon">↔</span> Transactions</a>
+            </nav>
+
+            <!-- Static category legend (coloured dots are styled in CSS) -->
+            <div class="image-container"><img src="abc.png" alt=""></div>
+
+            <!-- Bottom of sidebar: motivational card + profile -->
+            <div class="sidebar-bottom">
+                <div class="upgrade-card">
+                    <div class="upgrade-icon">✦</div>
+                    <strong>Make every rupee count.</strong>
+                    <p>Small steps today, better finances tomorrow.</p>
+                </div>
+            </div>
+        </aside>
 
 
         <!-- ================= MAIN CONTENT ================= -->

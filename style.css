@@ -42,3 +42,130 @@ button {
 .app-shell {
    min-height: 100vh
 }
+
+.sidebar {
+   width: 246px;
+   background: #fff;
+   border-right: 1px solid var(--line);
+   position: fixed;
+   inset: 0 auto 0 0;
+   padding: 30px 19px 18px;
+   display: flex;
+   flex-direction: column;
+   z-index: 5;
+   overflow: auto;
+}
+
+/* ==========================================================
+   SIDEBAR
+   ========================================================== */
+/* Fixed left column */
+
+/* Logo */
+.brand {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   text-decoration: none;
+   color: #1b2943;
+   font: 800 21px 'Manrope', sans-serif;
+   letter-spacing: -1px;
+   padding: 0 9px;
+   margin-bottom: 55px
+}
+
+.brand-mark {
+   width: 31px;
+   height: 31px;
+   border-radius: 10px;
+   background: #7665e8;
+   display: grid;
+   place-items: center;
+   box-shadow: 0 5px 12px #7665e844
+}
+
+.brand-mark svg {
+   width: 20px;
+   fill: none;
+   stroke: #fff;
+   stroke-width: 2;
+   stroke-linecap: round;
+   stroke-linejoin: round
+}
+
+/* Small uppercase section labels */
+.side-label {
+   font-size: 10px;
+   letter-spacing: 1.4px;
+   color: #a2aabb;
+   font-weight: 700;
+   padding: 0 11px;
+   margin-bottom: 13px
+}
+
+.image-container img {
+   height: 200px;
+}
+
+/* Navigation links */
+.side-nav {
+   display: grid;
+   gap: 5px
+}
+
+.nav-link {
+   height: 43px;
+   display: flex;
+   align-items: center;
+   gap: 13px;
+   padding: 0 12px;
+   color: #7f899c;
+   text-decoration: none;
+   border-radius: 9px;
+   font-weight: 600;
+   transition: .2s
+}
+
+.nav-link:hover {
+   background: #f7f6ff;
+   color: var(--purple)
+}
+
+.nav-link.active {
+   background: var(--purple-soft);
+   color: #6f5de0
+}
+
+
+
+
+/* Bottom of sidebar (pushed down with margin-top:auto) */
+.sidebar-bottom {
+   margin-top: auto
+}
+
+.upgrade-card {
+   background: linear-gradient(145deg, #f5f2ff, #faf9ff);
+   border: 1px solid #efebff;
+   border-radius: 12px;
+   padding: 15px 14px;
+   margin: 0 2px 20px
+}
+
+.upgrade-icon {
+   color: #806fea;
+   font-size: 18px;
+   margin-bottom: 10px
+}
+
+.upgrade-card strong {
+   font: 700 12px 'Manrope', sans-serif;
+   color: black
+}
+
+.upgrade-card p {
+   font-size: 10px;
+   line-height: 1.6;
+   color: black;
+   margin: 6px 0 0
+}
