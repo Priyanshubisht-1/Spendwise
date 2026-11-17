@@ -128,7 +128,67 @@
 
     <!-- ================= ADD TRANSACTION MODAL ================= -->
     <!-- Hidden by default; shown when the "show" class is added by script.js -->
-    <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true"> </div>
+    <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+        <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <div>
+                    <p class="eyebrow">KEEP YOUR RECORDS UP TO DATE</p>
+                    <h2 id="modalTitle">Add transaction</h2>
+                    <p class="modal-description">Capture the details so your dashboard stays accurate.</p>
+                </div><button class="close-button" id="closeModal" aria-label="Close">×</button>
+            </div>
+            <form id="transactionForm">
+                <!-- Expense / Income toggle -->
+                <div class="type-switch"><button type="button" class="type-option selected"
+                        data-type="expense">Expense</button><button type="button" class="type-option"
+                        data-type="income">Income</button></div>
+                <!-- Stores the currently selected type so the form can read it -->
+                <input type="hidden" id="entryType" value="expense">
+
+                <label for="titleInput">Transaction name</label>
+                <input id="titleInput" class="form-control" type="text" placeholder="e.g. Groceries, Salary"
+                    maxlength="50" required>
+
+                <!-- Amount and category side by side -->
+                <div class="form-row">
+                    <div><label for="amountInput">Amount (₹)</label><input id="amountInput" class="form-control"
+                            type="number" min="0.01" step="0.01" placeholder="0.00" required></div>
+                    <div><label for="categoryInput">Category</label><select id="categoryInput" class="form-control">
+                            <option value="Food & dining">Food &amp; dining</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills & utilities">Bills &amp; utilities</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Health">Health</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Other">Other / custom</option>
+                        </select></div>
+                </div>
+
+                <div id="customCategoryWrap" class="conditional-field" hidden><label for="customCategoryInput">Custom
+                        category</label><input id="customCategoryInput" class="form-control" type="text" maxlength="35"
+                        placeholder="e.g. Tuition, Gifts"></div>
+                <label for="paymentMethodInput">Payment method</label><select id="paymentMethodInput"
+                    class="form-control">
+                    <option value="UPI">UPI</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Debit card">Debit card</option>
+                    <option value="Credit card">Credit card</option>
+                    <option value="Net banking">Net banking</option>
+                    <option value="Bank transfer">Bank transfer</option>
+                    <option value="Other">Other / custom</option>
+                </select>
+                <div id="customPaymentWrap" class="conditional-field" hidden><label for="customPaymentInput">Custom
+                        payment method</label><input id="customPaymentInput" class="form-control" type="text"
+                        maxlength="35" placeholder="e.g. Wallet, cheque"></div>
+                <label for="dateInput">Date</label><input id="dateInput" class="form-control" type="date" required>
+                <label for="noteInput">Note <span class="optional">(optional)</span></label><textarea id="noteInput"
+                    class="form-control note-control" rows="2" placeholder="Add a little context..."></textarea>
+                <button class="primary-button submit-button" type="submit"><span id="submitLabel">Save
+                        transaction</span><span aria-hidden="true">→</span></button>
+            </form>
+        </section>
+    </div>
 
 
     <div class="toast" id="toast" role="status" aria-live="polite"> </div>
