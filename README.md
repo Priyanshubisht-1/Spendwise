@@ -1,1 +1,1 @@
-# Spendwise Website -> kharcha-paani tracker
+# Spendwise Website -> Personal Expense Tracker
