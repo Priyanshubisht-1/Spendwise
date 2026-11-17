@@ -598,3 +598,155 @@ body.dark .search-box input {
 }
 
 
+/* ==========================================================
+   MODAL (Add transaction)
+   ========================================================== */
+/* Full-screen blurred overlay, hidden until ".show" is added */
+.modal-backdrop {
+   position: fixed;
+   inset: 0;
+   background: #17233c77;
+   backdrop-filter: blur(4px);
+   display: none;
+   align-items: center;
+   justify-content: center;
+   padding: 20px;
+   z-index: 10
+}
+
+.modal-backdrop.show {
+   display: flex
+}
+
+/* Modal box with a small slide-in animation */
+.modal {
+   width: min(100%, 460px);
+   background: #fff;
+   border-radius: 15px;
+   padding: 25px 27px;
+   box-shadow: 0 20px 70px #111b3033;
+   animation: modalIn .2s ease
+}
+
+@keyframes modalIn {
+   from {
+      opacity: 0;
+      transform: translateY(8px)
+   }
+
+   to {
+      opacity: 1;
+      transform: translateY(0)
+   }
+}
+
+.modal-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+   margin-bottom: 20px
+}
+
+.modal-header h2 {
+   font: 800 21px 'Manrope', sans-serif;
+   margin: 0;
+   color: #202d46
+}
+
+.close-button {
+   border: 0;
+   background: #f4f5f8;
+   color: #7e899b;
+   width: 30px;
+   height: 30px;
+   border-radius: 8px;
+   font-size: 21px;
+   line-height: 1
+}
+
+/* Expense / Income segmented switch */
+.type-switch {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   background: #f4f5f9;
+   padding: 4px;
+   border-radius: 8px;
+   margin-bottom: 20px
+}
+
+.type-option {
+   border: 0;
+   background: transparent;
+   border-radius: 6px;
+   padding: 9px;
+   color: #9099a9;
+   font-size: 11px;
+   font-weight: 600
+}
+
+.type-option.selected {
+   background: #fff;
+   color: #6e5cdb;
+   box-shadow: 0 2px 6px #1c29410c
+}
+
+/* Form fields */
+.modal form label {
+   display: block;
+   font-size: 10px;
+   font-weight: 700;
+   color: #5e6a7f;
+   margin: 13px 0 7px
+}
+
+.form-control {
+   width: 100%;
+   border: 1px solid #e7eaf0;
+   border-radius: 7px;
+   padding: 11px 12px;
+   outline: none;
+   color: #3f4c63;
+   font-size: 11px;
+   background: #fff;
+   transition: .2s
+}
+
+.form-control:focus {
+   border-color: #9b8df0;
+   box-shadow: 0 0 0 3px #7665e815
+}
+
+/* purple focus ring */
+.form-control::placeholder {
+   color: #b1b8c4
+}
+
+.form-row {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 12px
+}
+
+/* two fields side by side */
+.optional {
+   color: #abb3bf;
+   font-weight: 400
+}
+
+.note-control {
+   resize: vertical
+}
+
+.submit-button {
+   width: 100%;
+   margin-top: 22px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 8px
+}
+
+.submit-button span {
+   margin: 0
+}
+
