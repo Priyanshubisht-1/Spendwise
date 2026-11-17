@@ -19,68 +19,9 @@ let editingId = null;
 let toastTimer = null;
 let lastFocusedElement = null;
 
-
-/******************* Sidebar Functionality *******************/
-
-$("mobileMenu").addEventListener("click", () => {
-  const isOpen = $("sidebar").classList.toggle("open");
-  $("mobileMenu").setAttribute("aria-expanded", String(isOpen));
-});
-
-document.querySelectorAll(".nav-link").forEach((link) => {
-  link.addEventListener("click", () => {
-    $("sidebar").classList.remove("open");
-    $("mobileMenu").setAttribute("aria-expanded", "false");
-    document.querySelectorAll(".nav-link").forEach((navLink) => navLink.classList.toggle("active", navLink === link));
-  });
-});
-
-
-/* -----------------------------
-   Calculations
-   ----------------------------- */
-function totals() {
-  const income = transactions.filter((item) => item.type === "income")
-    .reduce((sum, item) => sum + item.amount, 0);
-  const expenses = transactions.filter((item) => item.type === "expense")
-    .reduce((sum, item) => sum + item.amount, 0);
-  const month = transactions.filter((item) => item.type === "expense" && isThisMonth(item))
-    .reduce((sum, item) => sum + item.amount, 0);
-  return { income, expenses, month, balance: income - expenses };
-}
-
-
-/******************* light/dark mode *******************/
-
-$("themeToggle").addEventListener("click", () => {
-  const isDark = document.body.classList.toggle("dark");
-  try { localStorage.setItem(THEME_KEY, isDark ? "1" : "0"); } catch (error) { /* Theme still works for this session. */ }
-  $("themeToggle").setAttribute("aria-pressed", String(isDark));
-});
-
-try {
-  if (localStorage.getItem(THEME_KEY) === "1") {
-    document.body.classList.add("dark");
-    $("themeToggle").setAttribute("aria-pressed", "true");
-  }
-} catch (error) {
-  console.warn("Could not restore theme preference:", error);
-}
-
-$("todayLabel").textContent = new Date().toLocaleDateString("en-IN", {
-  weekday: "short", day: "numeric", month: "short", year: "numeric"
-});
-
 /* -----------------------------
    Date, formatting and utilities
    ----------------------------- */
-
-function isThisMonth(item) {
-  const date = parseLocalDate(item.date);
-  const now = new Date();
-  return Boolean(date && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear());
-}
-
 function money(value) {
   return CURRENCY.format(Number(value) || 0);
 }
@@ -97,6 +38,38 @@ function isValidDateString(value) {
   const [year, month, day] = value.split("-").map(Number);
   const date = new Date(year, month - 1, day);
   return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+}
+
+function parseLocalDate(value) {
+  if (!isValidDateString(value)) return null;
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function dateLabel(value) {
+  const date = parseLocalDate(value);
+  return date
+    ? date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+    : "Invalid date";
+}
+
+function isThisMonth(item) {
+  const date = parseLocalDate(item.date);
+  const now = new Date();
+  return Boolean(date && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear());
+}
+
+function createId() {
+  return globalThis.crypto?.randomUUID?.() || `txn-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function showToast(message, type = "success") {
+  const toast = $("toast");
+  if (!toast) return;
+  toast.textContent = message;
+  toast.className = `toast show ${type}`;
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
 /* -----------------------------
@@ -137,6 +110,29 @@ function saveTransactions() {
 }
 
 /* -----------------------------
+   Calculations
+   ----------------------------- */
+function totals() {
+  const income = transactions.filter((item) => item.type === "income")
+    .reduce((sum, item) => sum + item.amount, 0);
+  const expenses = transactions.filter((item) => item.type === "expense")
+    .reduce((sum, item) => sum + item.amount, 0);
+  const month = transactions.filter((item) => item.type === "expense" && isThisMonth(item))
+    .reduce((sum, item) => sum + item.amount, 0);
+  return { income, expenses, month, balance: income - expenses };
+}
+
+function getCategoryTotals(period) {
+  const filtered = transactions.filter((item) =>
+    item.type === "expense" && (period === "all" || isThisMonth(item))
+  );
+  return filtered.reduce((result, item) => {
+    result[item.category] = (result[item.category] || 0) + item.amount;
+    return result;
+  }, {});
+}
+
+/* -----------------------------
    Rendering: summary and charts
    ----------------------------- */
 function renderStats() {
@@ -161,10 +157,176 @@ function renderStats() {
   }
 }
 
+function compactRupees(value) {
+  if (value >= 10000000) return `₹${(value / 10000000).toFixed(1)}Cr`;
+  if (value >= 100000) return `₹${(value / 100000).toFixed(1)}L`;
+  if (value >= 1000) return `₹${(value / 1000).toFixed(1)}k`;
+  return `₹${Math.round(value)}`;
+}
+
+function renderYAxis(maxValue) {
+  const axis = $("yAxis");
+  axis.replaceChildren();
+  for (let step = 4; step >= 0; step -= 1) {
+    const label = document.createElement("span");
+    label.textContent = compactRupees(maxValue * step / 4);
+    axis.append(label);
+  }
+}
+
+function renderCharts() {
+  const entries = Object.entries(getCategoryTotals($("chartPeriod").value))
+    .sort((a, b) => b[1] - a[1]);
+  const total = entries.reduce((sum, [, amount]) => sum + amount, 0);
+  const bars = $("chartBars");
+  const legend = $("chartLegend");
+  const breakdown = $("breakdownList");
+  const donut = $("donut");
+
+  $("chartTotal").textContent = money(total);
+  $("donutTotal").textContent = money(total);
+  bars.replaceChildren();
+  legend.replaceChildren();
+  breakdown.replaceChildren();
+
+  if (!entries.length || total <= 0) {
+    bars.innerHTML = '<div class="empty-chart">Add expenses to see your spending breakdown.</div>';
+    donut.style.background = "conic-gradient(#e9edf4 0 100%)";
+    breakdown.innerHTML = '<div class="empty-state small-empty">Your categories will appear here.</div>';
+    renderYAxis(0);
+    return;
+  }
+
+  const maxValue = Math.max(...entries.map(([, amount]) => amount));
+  renderYAxis(maxValue);
+
+  entries.slice(0, 5).forEach(([name, amount], index) => {
+    const color = palette[index % palette.length];
+
+    const column = document.createElement("div");
+    column.className = "bar-column";
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.style.height = `${Math.max(3, (amount / maxValue) * 112)}px`;
+    bar.style.background = color;
+    bar.title = `${name}: ${money(amount)}`;
+    const label = document.createElement("span");
+    label.className = "bar-label";
+    label.textContent = name.length > 12 ? `${name.slice(0, 11)}…` : name;
+    column.append(bar, label);
+    bars.append(column);
+
+    const legendItem = document.createElement("span");
+    legendItem.className = "legend-item";
+    const dot = document.createElement("i");
+    dot.style.background = color;
+    legendItem.append(dot, document.createTextNode(name));
+    legend.append(legendItem);
+
+    const row = document.createElement("div");
+    row.className = "breakdown-item";
+    const categoryName = document.createElement("span");
+    categoryName.className = "breakdown-name";
+    const categoryDot = document.createElement("i");
+    categoryDot.style.background = color;
+    categoryName.append(categoryDot, document.createTextNode(name));
+    const categoryAmount = document.createElement("strong");
+    categoryAmount.className = "breakdown-amount";
+    categoryAmount.textContent = money(amount);
+    row.append(categoryName, categoryAmount);
+    breakdown.append(row);
+  });
+
+  let offset = 0;
+  const segments = entries.map(([, amount], index) => {
+    const start = offset;
+    offset += (amount / total) * 100;
+    return `${palette[index % palette.length]} ${start}% ${offset}%`;
+  });
+  donut.style.background = `conic-gradient(${segments.join(", ")})`;
+}
+
 /* -----------------------------
    Rendering: transactions table
    ----------------------------- */
-   
+function renderTransactions() {
+  const query = $("searchInput").value.trim().toLowerCase();
+  const filter = $("filterType").value;
+  const rows = transactions
+    .filter((item) => filter === "all" || item.type === filter)
+    .filter((item) => `${item.title} ${item.category} ${item.note} ${item.paymentMethod}`.toLowerCase().includes(query))
+    .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
+
+  const body = $("transactionBody");
+  body.replaceChildren();
+
+  if (!rows.length) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 6;
+    cell.className = "table-empty";
+    cell.textContent = transactions.length
+      ? "No transactions match your search or filter."
+      : "No transactions yet. Add your first one to get started.";
+    row.append(cell);
+    body.append(row);
+  } else {
+    rows.forEach((item) => {
+      const row = document.createElement("tr");
+
+      const nameCell = document.createElement("td");
+      const nameWrap = document.createElement("div");
+      nameWrap.className = "transaction-name";
+      const avatar = document.createElement("span");
+      avatar.className = `transaction-avatar ${item.type}`;
+      avatar.textContent = item.type === "income" ? "↙" : "↗";
+      const title = document.createElement("span");
+      title.className = "transaction-title";
+      title.textContent = item.title;
+      nameWrap.append(avatar, title);
+      nameCell.append(nameWrap);
+
+      const categoryCell = document.createElement("td");
+      const category = document.createElement("span");
+      category.className = "category-pill";
+      category.textContent = item.category;
+      categoryCell.append(category);
+
+      const paymentCell = document.createElement("td");
+      paymentCell.textContent = item.paymentMethod || "Not specified";
+
+      const dateCell = document.createElement("td");
+      dateCell.textContent = dateLabel(item.date);
+
+      const amountCell = document.createElement("td");
+      amountCell.className = `amount-cell ${item.type}`;
+      amountCell.textContent = `${item.type === "income" ? "+" : "−"} ${money(item.amount)}`;
+
+      const actionCell = document.createElement("td");
+      actionCell.className = "action-cell";
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.className = "edit-button";
+      editButton.textContent = "Edit";
+      editButton.setAttribute("aria-label", `Edit ${item.title}`);
+      editButton.addEventListener("click", () => openEditModal(item.id));
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "delete-button";
+      deleteButton.textContent = "Delete";
+      deleteButton.setAttribute("aria-label", `Delete ${item.title}`);
+      deleteButton.addEventListener("click", () => deleteTransaction(item.id));
+      actionCell.append(editButton, deleteButton);
+
+      row.append(nameCell, categoryCell, paymentCell, dateCell, amountCell, actionCell);
+      body.append(row);
+    });
+  }
+
+  $("transactionCount").textContent = `Showing ${rows.length} of ${transactions.length} transactions`;
+  $("exportCsv").disabled = transactions.length === 0;
+}
+
 function renderAll() {
   renderStats();
   renderCharts();
@@ -208,7 +370,6 @@ function resetTransactionForm() {
   setEntryType("expense", true);
   syncCustomFields();
 }
-
 
 function showModal() {
   lastFocusedElement = document.activeElement;
@@ -332,6 +493,45 @@ function handleFormSubmit(event) {
   }
 }
 
+/* -----------------------------
+   Delete and CSV export
+   ----------------------------- */
+function deleteTransaction(id) {
+  const item = transactions.find((transaction) => transaction.id === id);
+  if (!item || !confirm(`Delete “${item.title}”? This cannot be undone.`)) return;
+  transactions = transactions.filter((transaction) => transaction.id !== id);
+  if (saveTransactions()) {
+    renderAll();
+    showToast("Transaction deleted.");
+  }
+}
+
+function csvCell(value) {
+  let text = String(value ?? "");
+  // Reduce spreadsheet formula-injection risk for user-entered text fields.
+  if (/^[\s]*[=+\-@]/.test(text)) text = `'${text}`;
+  return `"${text.replace(/"/g, '\"\"')}"`;
+}
+
+function exportCSV() {
+  if (!transactions.length) return;
+  const headers = ["Title", "Type", "Category", "Amount (INR)", "Date", "Payment Method", "Note"];
+  const rows = transactions
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((item) => [item.title, item.type, item.category, item.amount, item.date, item.paymentMethod, item.note]);
+  const csv = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+  const blob = new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `spendwise-transactions-${localDateInputValue()}.csv`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  showToast("CSV export downloaded.");
+}
 
 /* -----------------------------
    Event listeners and startup
@@ -353,5 +553,50 @@ $("paymentMethodInput").addEventListener("change", syncCustomFields);
 $("titleInput").addEventListener("input", () => $("titleInput").setCustomValidity(""));
 $("transactionForm").addEventListener("submit", handleFormSubmit);
 
+$("searchInput").addEventListener("input", renderTransactions);
+$("filterType").addEventListener("change", renderTransactions);
+$("chartPeriod").addEventListener("change", renderCharts);
+$("exportCsv").addEventListener("click", exportCSV);
 
+$("clearAll").addEventListener("click", () => {
+  if (!transactions.length || !confirm("Delete all transactions? This cannot be undone.")) return;
+  transactions = [];
+  if (saveTransactions()) {
+    renderAll();
+    showToast("All transactions cleared.");
+  }
+});
+
+$("themeToggle").addEventListener("click", () => {
+  const isDark = document.body.classList.toggle("dark");
+  try { localStorage.setItem(THEME_KEY, isDark ? "1" : "0"); } catch (error) { /* Theme still works for this session. */ }
+  $("themeToggle").setAttribute("aria-pressed", String(isDark));
+});
+
+try {
+  if (localStorage.getItem(THEME_KEY) === "1") {
+    document.body.classList.add("dark");
+    $("themeToggle").setAttribute("aria-pressed", "true");
+  }
+} catch (error) {
+  console.warn("Could not restore theme preference:", error);
+}
+
+$("mobileMenu").addEventListener("click", () => {
+  const isOpen = $("sidebar").classList.toggle("open");
+  $("mobileMenu").setAttribute("aria-expanded", String(isOpen));
+});
+document.querySelectorAll(".nav-link").forEach((link) => {
+  link.addEventListener("click", () => {
+    $("sidebar").classList.remove("open");
+    $("mobileMenu").setAttribute("aria-expanded", "false");
+    document.querySelectorAll(".nav-link").forEach((navLink) => navLink.classList.toggle("active", navLink === link));
+  });
+});
+
+$("todayLabel").textContent = new Date().toLocaleDateString("en-IN", {
+  weekday: "short", day: "numeric", month: "short", year: "numeric"
+});
+$("dateInput").value = localDateInputValue();
+syncCustomFields();
 renderAll();
